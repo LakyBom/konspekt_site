@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101522">
+  <meta name="description" content="Интерактивный конспект по асимптотическому анализу алгоритмов: Big O, циклы, поиск и примеры Python.">
+  <title>Асимптотика алгоритмов — конспект</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="На главную"><span class="brand-mark">ƒ</span><span>algo<span class="brand-muted">notes</span></span></a>
+    <nav class="topnav" aria-label="Основная навигация">
+      <a href="#basics">Основы</a><a href="#complexities">Сложности</a><a href="#loops">Циклы</a><a href="#examples">Примеры</a>
+    </nav>
+    <button id="themeToggle" class="icon-button" type="button" aria-label="Переключить тему" title="Переключить тему">☾</button>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse"></span> КРАТКИЙ КОНСПЕКТ · PYTHON</div>
+        <h1>Асимптотика<br><span>алгоритмов</span></h1>
+        <p class="hero-lead">Как растут время выполнения и расход памяти, когда входные данные становятся больше.</p>
+        <div class="hero-actions"><a class="button primary" href="#complexities">Изучить сложности <span>↓</span></a><a class="button secondary" href="#cheatsheet">Шпаргалка</a></div>
+        <div class="hero-meta"><span>⌁ Без замеров времени</span><span>◷ От простого к сложному</span></div>
+      </div>
+      <div class="hero-visual" aria-label="Схематичный график роста сложности">
+        <div class="visual-top"><span>РОСТ ФУНКЦИЙ</span><span class="live-dot">● концептуально</span></div>
+        <svg class="growth-chart" viewBox="0 0 460 280" role="img" aria-label="Графики O(1), O(log n), O(n), O(n log n), O(n²)">
+          <defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#8b7bff" stop-opacity=".3"/><stop offset="1" stop-color="#8b7bff" stop-opacity="0"/></linearGradient></defs>
+          <g class="gridlines"><path d="M44 30V238H435 M44 185H435 M44 132H435 M44 79H435"/></g>
+          <path class="curve curve-square" d="M44 234 Q110 232 160 218 T260 160 T350 75 T430 22"/>
+          <path class="curve curve-nlog" d="M44 234 Q100 230 160 211 T270 155 T430 100"/>
+          <path class="curve curve-linear" d="M44 234 L430 145"/>
+          <path class="curve curve-log" d="M44 234 C75 205 100 190 140 180 S260 158 430 150"/>
+          <path class="curve curve-constant" d="M44 225 L430 225"/>
+          <text x="365" y="32" class="chart-label label-square">O(n²)</text>
+          <text x="355" y="91" class="chart-label label-nlog">O(n log n)</text>
+          <text x="366" y="138" class="chart-label label-linear">O(n)</text>
+          <text x="366" y="166" class="chart-label label-log">O(log n)</text>
+          <text x="366" y="218" class="chart-label label-constant">O(1)</text>
+          <text x="35" y="258" class="axis-label">0</text><text x="408" y="258" class="axis-label">n →</text>
+        </svg>
+        <div class="visual-caption">Чем медленнее растёт функция, тем лучше она масштабируется.</div>
+      </div>
+    </section>
+
+    <section class="stats-row" aria-label="Ключевые идеи">
+      <article class="mini-stat"><span class="stat-icon purple">O</span><div><strong>Порядок роста</strong><small>Главное — тенденция, а не секунды</small></div></article>
+      <article class="mini-stat"><span class="stat-icon blue">n</span><div><strong>Размер входа</strong><small>Количество элементов или объём данных</small></div></article>
+      <article class="mini-stat"><span class="stat-icon green">↗</span><div><strong>Масштабирование</strong><small>Как алгоритм ведёт себя при росте n</small></div></article>
+    </section>
+
+    <section class="section" id="basics">
+      <div class="section-heading"><div><div class="eyebrow">01 / ОСНОВЫ</div><h2>Что такое асимптотика?</h2></div><p>Мы оцениваем, как меняется потребление ресурсов при увеличении входа.</p></div>
+      <div class="two-col">
+        <article class="panel"><div class="panel-icon">⏱</div><h3>Временная сложность</h3><p>Описывает, как растёт число элементарных операций алгоритма. Это <strong>не измерение секунд</strong>.</p><div class="code-line">Например: O(n) — линейный рост</div></article>
+        <article class="panel"><div class="panel-icon">▦</div><h3>Пространственная сложность</h3><p>Описывает, как растёт дополнительная память, нужная алгоритму, в зависимости от размера входа.</p><div class="code-line">Например: O(1) — постоянная память</div></article>
+      </div>
+      <div class="note"><span class="note-mark">i</span><p><strong>Big O</strong> обычно описывает верхнюю асимптотическую границу. В учебных задачах его часто используют для обозначения порядка роста в худшем случае. Константы и менее значимые слагаемые отбрасывают: <code>3n² + 5n + 7 = O(n²)</code>.</p></div>
+    </section>
+
+    <section class="section" id="complexities">
+      <div class="section-heading"><div><div class="eyebrow">02 / ШКАЛА СЛОЖНОСТИ</div><h2>Основные классы</h2></div><p>Нажми на карточку, чтобы увидеть пример и краткое объяснение.</p></div>
+      <div class="complexity-grid">
+        <button class="complexity-card c1" data-complexity="constant"><span class="complexity-tag">ОТЛИЧНО</span><div class="big-o">O(1)</div><h3>Постоянная</h3><p>Работа не зависит от n.</p><span class="card-example">Доступ по индексу ↗</span></button>
+        <button class="complexity-card c2" data-complexity="log"><span class="complexity-tag">ОЧЕНЬ ХОРОШО</span><div class="big-o">O(log n)</div><h3>Логарифмическая</h3><p>Размер задачи быстро уменьшается.</p><span class="card-example">Двоичный поиск ↗</span></button>
+        <button class="complexity-card c3" data-complexity="linear"><span class="complexity-tag">ХОРОШО</span><div class="big-o">O(n)</div><h3>Линейная</h3><p>Каждый элемент обрабатывается один раз.</p><span class="card-example">Линейный поиск ↗</span></button>
+        <button class="complexity-card c4" data-complexity="nlogn"><span class="complexity-tag">ЧАСТО ХОРОШО</span><div class="big-o">O(n log n)</div><h3>Линейно-логарифмическая</h3><p>Линейная работа на логарифмических уровнях.</p><span class="card-example">Merge sort ↗</span></button>
+        <button class="complexity-card c5" data-complexity="quadratic"><span class="complexity-tag">ДОРОГО</span><div class="big-o">O(n²)</div><h3>Квадратичная</h3><p>Часто возникает из двух вложенных циклов.</p><span class="card-example">Сравнение всех пар ↗</span></button>
+        <button class="complexity-card c6" data-complexity="exponential"><span class="complexity-tag">ОЧЕНЬ ДОРОГО</span><div class="big-o">O(2ⁿ)</div><h3>Экспоненциальная</h3><p>Работа удваивается при каждом +1 к n.</p><span class="card-example">Перебор подмножеств ↗</span></button>
+      </div>
+      <div id="complexityDetail" class="detail-panel" aria-live="polite"><div class="detail-badge">ВЫБЕРИ КЛАСС</div><h3>Сравнивай скорость роста</h3><p>Карточка покажет типичный сценарий и пример кода.</p><code>for item in items: ...</code></div>
+    </section>
+
+    <section class="section" id="loops">
+      <div class="section-heading"><div><div class="eyebrow">03 / АНАЛИЗ ЦИКЛОВ</div><h2>Как считать сложность</h2></div><p>Сначала считаем итерации, затем упрощаем выражение.</p></div>
+      <div class="steps">
+        <article class="step"><span>1</span><div><h3>Найди число итераций</h3><p>Посмотри на условие остановки и изменение счётчика.</p></div></article>
+        <article class="step"><span>2</span><div><h3>Оцени работу внутри</h3><p>Если тело выполняет O(1), то стоимость цикла определяется числом итераций.</p></div></article>
+        <article class="step"><span>3</span><div><h3>Запиши формулу</h3><p>Последовательные циклы складываются, вложенные — часто перемножаются или суммируются.</p></div></article>
+        <article class="step"><span>4</span><div><h3>Оставь главный член</h3><p>Удали константы и менее быстро растущие слагаемые.</p></div></article>
+      </div>
+      <div class="code-examples">
+        <article class="code-card"><div class="code-header"><span>Постоянное число повторов</span><span class="pill green-pill">O(1)</span></div><pre><code>for i in range(5):
+    do_constant_work()</code></pre><p>Пять итераций — это константа, даже если вход огромный.</p></article>
+        <article class="code-card"><div class="code-header"><span>Шаг на постоянную величину</span><span class="pill blue-pill">O(n)</span></div><pre><code>for i in range(0, n, 3):
+    do_constant_work()</code></pre><p>Примерно n/3 итераций. Константа 1/3 не меняет класс.</p></article>
+        <article class="code-card"><div class="code-header"><span>Умножение счётчика</span><span class="pill purple-pill">O(log n)</span></div><pre><code>i = 1
+while i &lt; n:
+    i *= 2</code></pre><p>После k итераций i = 2ᵏ. До n нужно около log₂(n) шагов.</p></article>
+        <article class="code-card"><div class="code-header"><span>Вложенные циклы</span><span class="pill orange-pill">O(n²)</span></div><pre><code>for i in range(n):
+    for j in range(n):
+        do_constant_work()</code></pre><p>n итераций снаружи × n внутри = n² операций.</p></article>
+      </div>
+      <article class="code-card wide-code"><div class="code-header"><span>Вложенный цикл с меняющейся границей</span><span class="pill orange-pill">O(n²)</span></div><pre><code>for i in range(n):
+    for j in range(i):
+        do_constant_work()</code></pre><p>Общее число шагов: 0 + 1 + 2 + … + (n − 1) = n(n − 1)/2 = O(n²).</p></article>
+    </section>
+
+    <section class="section" id="examples">
+      <div class="section-heading"><div><div class="eyebrow">04 / ПРИМЕРЫ PYTHON</div><h2>Разбираем алгоритмы</h2></div><p>Переключай вкладки, чтобы посмотреть код и вывод.</p></div>
+      <div class="tabs" role="tablist" aria-label="Примеры алгоритмов">
+        <button class="tab active" data-tab="search" role="tab" aria-selected="true">Линейный поиск</button>
+        <button class="tab" data-tab="special" role="tab" aria-selected="false">Специальная сумма</button>
+        <button class="tab" data-tab="binary" role="tab" aria-selected="false">Двоичный поиск</button>
+      </div>
+      <div class="example-layout">
+        <div class="example-copy"><div id="exampleLabel" class="eyebrow">ПОИСК ЭЛЕМЕНТА</div><h3 id="exampleTitle">Линейный поиск</h3><p id="exampleDescription">Последовательно проверяем элементы, пока не найдём цель или не закончим список.</p><div class="complexity-pair"><div><small>Лучший случай</small><strong id="bestCase">O(1)</strong></div><div><small>Худший случай</small><strong id="worstCase">O(n)</strong></div></div><div id="exampleTip" class="note compact-note"><span class="note-mark">✓</span><p>Если цель стоит первой, выполняется одно сравнение.</p></div></div>
+        <div class="code-window"><div class="window-bar"><span></span><span></span><span></span><small>example.py</small><button id="copyCode" type="button">Копировать</button></div><pre><code id="exampleCode">def search(arr, target):
+    for i, value in enumerate(arr):
+        if value == target:
+            return i
+    return -1
+
+print(search([1, 10, 30, 15], 30))  # 2</code></pre><div class="code-output"><span>OUTPUT</span><code id="exampleOutput">2</code></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="sequential">
+      <div class="section-heading"><div><div class="eyebrow">05 / ПРАВИЛА</div><h2>Как объединять сложности</h2></div></div>
+      <div class="rules-grid">
+        <article class="rule-card"><span class="rule-symbol">＋</span><h3>Последовательные блоки</h3><p>Сложности складываем, затем оставляем доминирующий член.</p><div class="formula">O(n) + O(n²) = <strong>O(n²)</strong></div></article>
+        <article class="rule-card"><span class="rule-symbol">×</span><h3>Вложенные циклы</h3><p>Если оба цикла выполняются n раз и работа внутри постоянная, число операций перемножается.</p><div class="formula">n × n = <strong>O(n²)</strong></div></article>
+        <article class="rule-card"><span class="rule-symbol">Σ</span><h3>Меняющаяся граница</h3><p>Суммируем число итераций внутреннего цикла для каждого шага внешнего.</p><div class="formula">1 + 2 + … + n = <strong>O(n²)</strong></div></article>
+      </div>
+    </section>
+
+    <section class="section" id="cheatsheet">
+      <div class="section-heading"><div><div class="eyebrow">06 / ПОВТОРЕНИЕ</div><h2>Шпаргалка</h2></div><p>Короткие правила перед контрольной или собеседованием.</p></div>
+      <div class="cheat-sheet">
+        <div class="cheat-row"><code>O(1)</code><span>Константное число операций, независимо от n.</span><em>Индекс массива</em></div>
+        <div class="cheat-row"><code>O(log n)</code><span>На каждом шаге размер задачи уменьшается в несколько раз.</span><em>Двоичный поиск</em></div>
+        <div class="cheat-row"><code>O(n)</code><span>Один проход по n элементам.</span><em>Линейный поиск</em></div>
+        <div class="cheat-row"><code>O(n log n)</code><span>Логарифмическое число уровней с линейной работой на уровне.</span><em>Merge sort</em></div>
+        <div class="cheat-row"><code>O(n²)</code><span>Часто два полных вложенных прохода.</span><em>Selection sort</em></div>
+        <div class="cheat-row"><code>O(2ⁿ)</code><span>Перебор комбинаций, число которых экспоненциально растёт.</span><em>Все подмножества</em></div>
+      </div>
+      <div class="note warning"><span class="note-mark">!</span><p><strong>Важные уточнения.</strong> Линейный поиск: лучший случай O(1), худший O(n), средний обычно O(n) при стандартных предположениях. В задаче со специальной суммой чётная длина даёт O(1), нечётная — O(n); поэтому сложность зависит от рассматриваемого случая, а не от «среднего события». Сортировки выбором и вставками в общем случае имеют O(n²) времени.</p></div>
+    </section>
+
+    <section class="section quiz-section" id="quiz">
+      <div class="section-heading"><div><div class="eyebrow">МИНИ-ПРАКТИКА</div><h2>Проверь себя</h2></div><p>Выбери ответ — сразу увидишь объяснение.</p></div>
+      <div class="quiz-card">
+        <div class="quiz-progress"><span id="quizCount">ВОПРОС 1 ИЗ 3</span><div class="progress-track"><div id="progressBar"></div></div></div>
+        <h3 id="questionText">Какова сложность доступа к элементу списка по индексу?</h3>
+        <div id="answerOptions" class="answer-options">
+          <button class="answer-option" data-answer="0">O(n)</button><button class="answer-option" data-answer="1">O(1)</button><button class="answer-option" data-answer="2">O(n²)</button>
+        </div>
+        <p id="quizFeedback" class="quiz-feedback" aria-live="polite">Выбери один вариант.</p>
+        <button id="nextQuestion" class="button primary" type="button" disabled>Следующий вопрос →</button>
+      </div>
+    </section>
+  </main>
+
+  <footer><a class="brand" href="#top"><span class="brand-mark">ƒ</span><span>algo<span class="brand-muted">notes</span></span></a><p>Учись видеть рост, а не считать секунды.</p><a href="#top" class="back-top">Наверх ↑</a></footer>
+  <script src="script.js"></script>
+</body>
+</html>
